@@ -11,7 +11,7 @@ define(function(require, exports, module){
             
             var size = director.getWinSize();
 
-            var label = cc.createSprite('@Learning Cocos2dx-html5 \n with Cqwrap', {
+            var label = cc.createSprite('@Learning Cocos2dx-html5 \n and Cqwrap', {
                 anchor: [0.5, 0.5],
                 xy: [size.width/2, 350],
                 fontSize: 44,
