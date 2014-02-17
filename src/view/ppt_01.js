@@ -8,7 +8,7 @@ define(function(require, exports, module){
     var MyLayer = PPTLayer.extend({
         init: function(){
             this._super();
-
+            
             var size = director.getWinSize();
 
             var label = cc.createSprite('@Learning Cocos2dx-html5 \n with Cqwrap', {

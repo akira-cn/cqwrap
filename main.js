@@ -31,7 +31,7 @@ require.config({
 
 
 //var myApp = new Cocos2dApp(HelloWorldScene);
-require(['cqwrap/index.js', 'src/resource.js', 'src/view/hello_world.js'], function(_, _, FirstScene){
+require(['cqwrap/index.js', 'src/resource.js', 'src/view/ppt_01.js'], function(_, _, FirstScene){
     var Cocos2dApp = cc.Application.extend({
         config:document['ccConfig'],
         ctor:function (scene) {
@@ -52,7 +52,7 @@ require(['cqwrap/index.js', 'src/resource.js', 'src/view/hello_world.js'], funct
             var director = cc.Director.getInstance();
 
             cc.EGLView.getInstance().resizeWithBrowserSize(true);
-            cc.EGLView.getInstance().setDesignResolutionSize(1280, 720, cc.RESOLUTION_POLICY.SHOW_ALL);
+            cc.EGLView.getInstance().setDesignResolutionSize(720, 540, cc.RESOLUTION_POLICY.SHOW_ALL);
 
             //director.offsetY = 0;
             // turn on display FPS

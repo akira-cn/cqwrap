@@ -11,14 +11,11 @@ define(function(require, exports, module){
             this._super();
             this._actions = [];
             this.delegate(this, 'touchstart', function(){
-                var action = this._actions.shift();
-                if(action){
-                    action.apply(this, arguments);
-                }
-                if(this._actions.length <= 0){
-                    this._actions.push(action);
-                }
+                this.onKeyDown(13);
             });
+            if( 'keyboard' in sys.capabilities ) {
+                this.setKeyboardEnabled(true);
+            }
         },
         setNextScene: function(NextScene){
             this.pushAction(function(){
@@ -37,6 +34,20 @@ define(function(require, exports, module){
                 var scene = transation.create(1.0, new NextScene());
                 director.pushScene(scene);
             });
+        },
+        onKeyDown:function(key) {
+            //cc.log("Key down:" + key);
+            if(key == 13 || key == 32){
+                var action = this._actions.shift();
+                if(action){
+                    action.apply(this, arguments);
+                }
+                if(this._actions.length <= 0){
+                    this._actions.push(action);
+                }                
+            }else if(key == 8){
+                director.popScene();
+            }
         },
         backClicked: function(){
             director.popScene();
