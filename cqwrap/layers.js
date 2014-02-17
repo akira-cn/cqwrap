@@ -152,7 +152,7 @@ var GameLayer = BaseLayer.extend({
             if(!node.on){
                 cc.mixin(node, new EventEmitter);
             }
-            this._touchTargets.push(node);
+            this._touchTargets.unshift(node);
             this._touchTargets.sort(function(a, b){
                 return b.getZOrder() - a.getZOrder();
             });
