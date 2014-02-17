@@ -104,26 +104,22 @@ cc.mixin(AnimationTask.prototype, {
     delay: function(time){
         return this.addAction(cc.DelayTime, [time]);
     },
-    repeat: function(times){
+    /**
+     *  times - repeat time
+     *  fromWhere - default 0, repeat all sequences before
+     */
+    repeat: function(times, fromWhere){
         times = times || 9999999;
+        fromWhere = fromWhere || 0;
         var actionSeq = this.getActions();
         if(actionSeq.length > 0){
-            var action = actionSeq[actionSeq.length - 1];
+            var action = cc.Sequence.create.apply(cc.Sequence, actionSeq.slice(-fromWhere));
             action = cc.Repeat.create(action, times);
-            actionSeq[actionSeq.length - 1] = action;
-        }
-        return this;        
-    },
-    repeatAll: function(times){
-        times = times || 9999999;
-        var actionSeq = this.getActions();
-        if(actionSeq.length > 0){
-            var action = cc.Sequence.create.apply(cc.Sequence, actionSeq);
-            action = cc.Repeat.create(action, times);
-            actionSeq.length = 0;
+            if(fromWhere == 0) actionSeq.length = 0;
+            else actionSeq.length = actionSeq.length - fromWhere;
             actionSeq.push(action);
         }
-        return this;
+        return this;        
     },
     reverse: function(){
         var actionSeq = this.getActions();
@@ -186,10 +182,10 @@ cc.mixin(AnimationTask.prototype, {
         return this.addAction(cc.FadeTo, [dur, opacity], easing, rate);
     },
     jumpBy: function(dur, pos, height, times, easing, rate){
-        return this.runAction(cc.JumpBy, [dur, pos, height, times || 1], easing, rate);        
+        return this.addAction(cc.JumpBy, [dur, pos, height, times || 1], easing, rate);        
     },
     jumpTo: function(dur, pos, height, times, easing, rate){
-        return this.runAction(cc.JumpTo, [dur, pos, height, times || 1], easing, rate);
+        return this.addAction(cc.JumpTo, [dur, pos, height, times || 1], easing, rate);
     },
     moveBy: function(dur, pos, easing, rate){
         return this.addAction(cc.MoveBy, [dur, pos], easing, rate);
