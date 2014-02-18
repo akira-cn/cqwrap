@@ -37,7 +37,7 @@ define(function(require, exports, module){
 
             this.pushAction(function(){
                 var noBorder = new RectSprite(cc.c4f(0,0,0,0.5)
-                    , cc.c4f(0,0.5,0,1), 'resolution\n800*400\nno-border');
+                    , cc.c4f(0,0.5,0,1), 'resolution\n800*480\nno-border');
                 noBorder.setStyle({
                     size: [400, 240],
                     xy: [140, 100],
@@ -52,7 +52,7 @@ define(function(require, exports, module){
                 this.noBorder.removeFromParent(true);
 
                 var showAll = new RectSprite(cc.c4f(0.5,0,0,0.5)
-                    , cc.c4f(0,0.5,0,1), 'resolution\n800*400\nshow-all');
+                    , cc.c4f(0,0.5,0,1), 'resolution\n800*480\nshow-all');
 
                 showAll.setStyle({
                     size: [320, 192],
