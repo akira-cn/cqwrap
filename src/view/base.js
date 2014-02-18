@@ -24,9 +24,9 @@ define(function(require, exports, module){
                     cc.TransitionSlideInB,
                     cc.TransitionSlideInT,
                     cc.TransitionSlideInL,
-                    cc.TransitionCrossFade,
+                    //cc.TransitionCrossFade,
                     cc.TransitionFade,
-                    cc.TransitionFadeTR,
+                    //cc.TransitionFadeTR,
                     cc.TransitionZoomFlipX,
                     cc.TransitionZoomFlipY
                 ];
