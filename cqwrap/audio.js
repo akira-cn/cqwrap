@@ -20,18 +20,26 @@ var Audio = {
             audio.playMusic(name, true);
         }
     },
-    pauseMusic: function(){
-        audio.pauseMusic();
+    pauseMusic: function(name){
+        audio.pauseMusic(name);
     },
-    resumeMusic: function(){
-        audio.resumeMusic();
+    resumeMusic: function(name){
+        audio.resumeMusic(name);
+    },
+    stopMusic: function(name){
+        audio.stopMusic(name);
     },
     setEnable: function(enable){
         if(typeof enable !== 'object'){
             enable = {effect: enable, music: enable};
         }
-
         audio_enable = enable;
+        
+        if(audio_enable.music == false){
+            audio.pauseAllEffects();
+        }else{
+            audio.resumeAllEffects();
+        }
     }
 };
 

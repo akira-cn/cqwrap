@@ -68,7 +68,7 @@ var LoadingLayer = BaseLayer.extend({
                     if(musicsLeft.length <= 0){
                         deferred.resolve();
                     }else{
-                        Audio.preloadEffect(musicsLeft[0]);
+                        Audio.preloadMusic(musicsLeft[0]);
                     }
                 }, delay);
             }, delay);

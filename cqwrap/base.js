@@ -20,10 +20,21 @@ if(!cc.Assert){
   }
 }
 
+var isHtml5 = navigator.userAgent.indexOf('Cocos2dx') < 0;
+var isAndroid = navigator.userAgent.indexOf('Android') >= 0;
+var isIOS = navigator.userAgent.indexOf('iOS') >= 0;
+
 var timers = [null];
 
 function setTimer(target, callback, interval, repeat, delay, paused) {
-  cc.Director.getInstance().getScheduler().scheduleCallbackForTarget(target, callback, interval / 1000, repeat, delay, paused);
+  if(isHtml5){
+    setTimeout(function(){
+      cc.Director.getInstance().getScheduler().scheduleCallbackForTarget(target, callback, interval / 1000, repeat, delay, paused);
+    }, 0);
+  }else{
+    cc.Director.getInstance().getScheduler().unscheduleCallbackForTarget(target, callback);
+    cc.Director.getInstance().getScheduler().scheduleCallbackForTarget(target, callback, interval / 1000, repeat, delay, paused);
+  }
   timers.push(callback);
   return timers.length - 1
 }
@@ -57,10 +68,6 @@ if (global.setTimeout == undefined) {
   global.clearTimeout = cc.Node.prototype.clearTimeout;
   global.clearInterval = cc.Node.prototype.clearInterval
 }
-
-var isHtml5 = navigator.userAgent.indexOf('Cocos2dx') < 0;
-var isAndroid = navigator.userAgent.indexOf('Android') >= 0;
-var isIOS = navigator.userAgent.indexOf('iOS') >= 0;
 
 //修复cc.MenuItemSprite.create(sprite, sprite)在浏览器下重复使用报错的问题
 if (isHtml5) {
