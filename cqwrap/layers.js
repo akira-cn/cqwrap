@@ -91,6 +91,7 @@ var GameLayer = BaseLayer.extend({
         this._super();
         var offsetY = director.offsetY || 0;
         this.setPosition(cc.p(0, offsetY));
+
         this._touchTargets = [];
         this._clickAndMove = true;
 
@@ -173,7 +174,7 @@ var GameLayer = BaseLayer.extend({
         }
     },
     registerDelegate: function(){
-        cc.registerTargetedDelegate(-this.getZOrder(), true, this);
+        cc.registerTargetedDelegate(parseInt(-this.getZOrder()), true, this);
     },
     unregisterDelegate: function(){
         cc.unregisterTouchDelegate(this);
