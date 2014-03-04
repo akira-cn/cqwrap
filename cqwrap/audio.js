@@ -49,7 +49,9 @@ var Audio = {
         if(audio_enable.music == false){
             audio.stopMusic();
         }else{
-            audio.playMusic(this._music);
+            if(this._music){
+                audio.playMusic(this._music);
+            }
         }
     }
 };
