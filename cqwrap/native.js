@@ -16,7 +16,6 @@ if(!global.native){
 Object.defineProperty(native, 'onmessage', {
     value: function(data){
         //try{
-
         var data = JSON.parse(data);
         if(data && data.jsonrpc == "2.0"){
             var callback = callbacks[data.id];

@@ -57,6 +57,7 @@ var styleMap = {
             var spriteFrame = value && cc.SpriteFrameCache.getInstance().getSpriteFrame(value);
             if(spriteFrame){
                 node.setDisplayFrame(spriteFrame);
+                if(rect) node.setTextureRect(rect);
                 return true;
             }else{
                 var texture = cc.TextureCache.getInstance().addImage(value);
@@ -201,7 +202,7 @@ var styleMap = {
     color: {
         set: function(node, value){
             if(node && node.setColor){
-                value = cc.color(value);
+                value = cc.color(value).c4b;
                 node.setColor(value);
                 return true;
             }

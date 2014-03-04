@@ -72,14 +72,21 @@ cc.mixin(AnimationTask.prototype, {
         return this._animSeq;
     },
     addAction: function(actionCls, args, easing, rate){
-        for(var i = args.length - 1; i >= 0; i--){
-            if(args[i] !== undefined){
-                //args.length = i + 1;
-                break;
+        var actions;
+        if(actionCls instanceof cc.Action){
+            rate = easing;
+            easing = args;
+            actions = [actionCls];
+        }else{
+            for(var i = args.length - 1; i >= 0; i--){
+                if(args[i] !== undefined){
+                    break;
+                }
             }
+            args.length = i + 1;
+            actions = [actionCls.create.apply(actionCls, args)];
         }
-        args.length = i + 1;
-        var actions = [actionCls.create.apply(actionCls, args)];
+
         if(easing){
             //rate = rate || 2;
             var easingArgs = [].slice.call(arguments, 3);

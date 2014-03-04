@@ -23,10 +23,16 @@ var BaseLayer = cc.Layer.extend({
 var BgLayer = BaseLayer.extend({
     init:function (bgImg) {
         this._super();
-        var winSize = director.getWinSize();
-        var sprite = new BaseSprite(bgImg);
-        sprite.setPosition(cc.p(winSize.width/2, winSize.height/2));
-        this.addChild(sprite);
+        var color = cc.color(bgImg);
+        if(color){
+            var colorLayer = cc.LayerColor.create(color.c4b);
+            this.addChild(colorLayer);
+        }else{
+            var winSize = director.getWinSize();
+            var sprite = new BaseSprite(bgImg);
+            sprite.setPosition(cc.p(winSize.width/2, winSize.height/2));
+            this.addChild(sprite);
+        }
         return true;
     }
 });
@@ -127,9 +133,15 @@ var GameLayer = BaseLayer.extend({
         this._super();
     },
     addChild: function(node){
-        this._super.apply(this, arguments);
-        if(node.on){
-            this.delegate(node);
+        if(cc.isArray(node)){
+            for(var i = 0; i < node.length; i++){
+                this.addChild(node[i]);
+            }
+        }else{
+            this._super.apply(this, arguments);
+            if(node.on){
+                this.delegate(node);
+            }
         }
     },
     setTouchRect: function(rect){
@@ -212,10 +224,52 @@ var GameLayer = BaseLayer.extend({
     }
 });
 
+var MaskLayer = GameLayer.extend({
+    init: function(opacity){
+        opacity = opacity || 128;
+        this._super();
+        var mask = cc.LayerColor.create(cc.c4b(0, 0, 0, opacity));
+        this.addChild(mask);  
+    },
+    onEnter: function(){
+        this._super();
+        this.getParent().delegate(this);
+    },
+    onExit: function(){
+        this.getParent().undelegate(this);
+        this._super();
+    }
+});
+
+var MaskWithRectLayer = GameLayer.extend({
+    init: function(rect, opacity){
+        this._super(opacity);
+        var masks = [ new MaskLayer(),
+                      new MaskLayer(),
+                      new MaskLayer(),
+                      new MaskLayer()];
+    
+        this.addChild(masks);
+        this._masks = masks;
+
+        this.setRect(rect);
+    },
+    setRect: function(rect){
+        var masks = this._masks;
+        var scene = director.getWinSize();
+        masks[0].setPosition(cc.p(rect.x - scene.width, rect.y));
+        masks[1].setPosition(cc.p(rect.x, rect.y + rect.height));
+        masks[2].setPosition(cc.p(rect.x + rect.width, rect.y + rect.height - scene.height));
+        masks[3].setPosition(cc.p(rect.x + rect.width - scene.width, rect.y - scene.height));
+    }
+});
+
 module.exports = {
     BaseLayer: BaseLayer,
     BgLayer: BgLayer,
-    GameLayer: GameLayer
+    GameLayer: GameLayer,
+    MaskLayer: MaskLayer,
+    MaskWithRectLayer: MaskWithRectLayer
 };
 
 });

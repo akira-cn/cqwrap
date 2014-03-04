@@ -12,6 +12,7 @@ var Button = BaseNode.extend({
         this._super();
 
         var style;
+        var self = this;
 
         if(typeof event === 'function'){
             callback = event;
@@ -31,24 +32,28 @@ var Button = BaseNode.extend({
 
         cc.mixin(this, new EventEmitter);
 
-        this.on('touchstart', function(){
-            sprite.setScaleY(0.9);
-            sprite.setOpacity(sprite.getOpacity() * 0.8);
-        });
-
-        this.on('touchend', function(){
-            var scale = sprite.getScaleY();
-            if(Math.abs(scale - 0.9) < 0.01){
-                sprite.setScaleY(1.0);
-                sprite.setOpacity(sprite.getOpacity() / 0.8);
-            }
-        });
-
         if(callback){
-            this.on('click', callback);
+            this.on('touchstart', function(){
+                if(!self.activated){
+                    var scale = self.getScaleY(); 
+                    self.setScale(scale * 0.95, scale * 0.95);
+                    sprite.setOpacity(sprite.getOpacity() * 0.8);
+                    self.activated = true;
+                }
+            });
+
+            this.on('touchend', function(){
+                if(self.activated){
+                    var scale = self.getScaleY();
+                    self.setScale(scale / 0.95, scale / 0.95);
+                    sprite.setOpacity(sprite.getOpacity() / 0.8);
+                    self.activated = false;
+                }
+            });
+            
+            this.on(event, callback);
         }
         
-        var self = this;
         function setSprite(){
             sprite.setAnchorPoint(cc.p(0, 0));
             sprite.setPosition(cc.p(0, 0));
@@ -69,6 +74,10 @@ var Button = BaseNode.extend({
 
         this.getContentSprite = function(){
             return sprite;
+        }
+
+        this.isEnabled = function(){
+            return callback != null;
         }
     }
 });

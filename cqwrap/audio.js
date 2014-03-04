@@ -15,19 +15,30 @@ var Audio = {
             audio.playEffect(name, false);
         }
     },
-    playMusic: function(name){
+    playMusic: function(name){        
         if(audio_enable.music){
             audio.playMusic(name, true);
+        }else{
+            this._music = name;
         }
     },
-    pauseMusic: function(name){
-        audio.pauseMusic(name);
+    pauseMusic: function(){
+        if(audio_enable.music){
+            audio.pauseMusic();
+        }
     },
-    resumeMusic: function(name){
-        audio.resumeMusic(name);
+    resumeMusic: function(){
+        if(audio_enable.music){
+            audio.resumeMusic();
+        }
     },
-    stopMusic: function(name){
-        audio.stopMusic(name);
+    stopMusic: function(){
+        if(audio_enable.music){
+            audio.stopMusic();
+        }
+    },
+    isMusicPlaying: function(){
+        return audio.isMusicPlaying();
     },
     setEnable: function(enable){
         if(typeof enable !== 'object'){
@@ -36,9 +47,9 @@ var Audio = {
         audio_enable = enable;
         
         if(audio_enable.music == false){
-            audio.pauseAllEffects();
+            audio.stopMusic();
         }else{
-            audio.resumeAllEffects();
+            audio.playMusic(this._music);
         }
     }
 };

@@ -11,8 +11,33 @@ var when = require('cqwrap/when');
 var BaseScene = cc.Scene.extend({
     ctor:function() {
         this._super();
+        this._autoReload = false;
+
         this.init.apply(this, arguments);
         cc.associateWithNative( this, cc.Scene );
+    },
+    reload: function(){
+        var myScene = new this.constructor();
+        director.replaceScene(myScene);
+    },
+    onEnter: function(){
+        this._super();
+        if(this._autoReload && this._needReload){
+            this.reload();
+        }
+    },
+    onExit: function(){
+        if(this._autoReload){
+            this._needReload = true;
+        }
+        this._super();
+    },
+    /**
+        set this enabled to autoreload the scene 
+        when direct.popScene is called
+     */
+    setAutoReload: function(autoReload){
+        this._autoReload = autoReload;
     }
 });
 

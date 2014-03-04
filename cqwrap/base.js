@@ -8,7 +8,10 @@
 
 if(!global.console){
 	global.console = {
-		log: cc.log
+    log: cc.log,
+    error: cc.log,
+    trace: cc.log,
+    warn: cc.log
 	};
 }
 
@@ -25,6 +28,10 @@ var isAndroid = navigator.userAgent.indexOf('Android') >= 0;
 var isIOS = navigator.userAgent.indexOf('iOS') >= 0;
 
 var timers = [null];
+
+cc.isHtml5 = isHtml5;
+cc.isAndroid = isAndroid;
+cc.isIOS = isIOS;
 
 function setTimer(target, callback, interval, repeat, delay, paused) {
   if(isHtml5){
@@ -189,15 +196,36 @@ Object.defineProperty(global, 'scene', {
   configurable: false, 
 });
 
-cc.random = function(n){
+cc.random = function(n, m){
   if(typeof n === 'number'){
-    return 0 | Math.random() * n;
+    m = m || 0;
+    return 0 | (n + Math.random() * (m - n));
   }
   if(n instanceof Array){
     var len = n.length;
-    return n[0 | Math.random() * (len)];    
+    if(m == null){
+      return n[0 | Math.random() * (len)];
+    }else{
+      var ret = cc.arrayShuffle(n.slice(0));
+      return ret.slice(0, m);
+    }   
   }
 }
+
+cc.tmpl = function(str, data, format){      
+  str = str.replace(/\{([^\{\}]*)\}/g, function(sub, expr){
+    if(!expr) return '';
+      try{
+        var r = (new Function("data", "with(data){return (" + expr + ");}"))(data);
+        return format? format(r, expr) : r;
+      }catch(ex){
+        return sub;
+      }
+    }
+  );
+
+  return str;
+};
 
 cc.arrayShuffle = function(arr){
   for (var i = arr.length - 1; i > 0; i--) {
@@ -206,6 +234,7 @@ cc.arrayShuffle = function(arr){
     arr[i] = arr[j];
     arr[j] = tmp;
   }  
+  return arr;
 }
 
 cc.strToArray = function(value){
@@ -216,6 +245,7 @@ function hex_color_to_cxb(str){
   if(typeof str !== 'string'){
     return str;
   }
+  var c3b, c4b, c4f;
 
   str = str.trim();
   var values = [0, 0, 0];
@@ -227,27 +257,67 @@ function hex_color_to_cxb(str){
     values = str.match(/\w\w/g).map(function(o){
       return parseInt(o, 16);
     });
-    return cc.c3b.apply(null, values);
+    c3b = cc.c3b.apply(null, values);
+    c4b = cc.c4b.apply(null, values.concat([255]));
+    c4f = cc.c4f(c4b.r/255, c4b.g/255, c4b.b/255, c4b.a/255);
+    return {c3b:c3b, c4b:c4b, c4f:c4f};
   }else if(str.slice(0, 4) === 'rgb('){
     str = str.slice(4, -1);
     values = cc.strToArray(str);
-    return cc.c3b.apply(null, values);
+    c3b = cc.c3b.apply(null, values);
+    c4b = cc.c4b.apply(null, values.concat([255]));
+    c4f = cc.c4f(c4b.r/255, c4b.g/255, c4b.b/255, c4b.a/255);
+    return {c3b:c3b, c4b:c4b, c4f:c4f};
   }else if(str.slice(0, 5) === 'rgba('){
     str = str.slice(5, -1);
     values = cc.strToArray(str);
-    return cc.c4b.apply(null, values);
+    c3b = cc.c3b.apply(null, values.slice(-1));
+    c4b = cc.c4b.apply(null, values);
+    c4f = cc.c4f(c4b.r/255, c4b.g/255, c4b.b/255, c4b.a/255);
+    return {c3b:c3b, c4b:c4b, c4f:c4f};    
   }
 }
 
 cc.color = function(r, g, b, a){
   if(typeof(r) === 'string'){
     return hex_color_to_cxb(r);
-  }
-
-  if(typeof a === 'undefined'){
-    return cc.c3b(r, g, b);
   }else{
-    return cc.c4b(r, g, b, a);
+    a = a || 255;
+    var c3b, c4b, c4f;
+    c3b = cc.c3b(r, g, b);
+    c4b = cc.c4b(r, g, b, a);
+    c4f = cc.c4f(c4b.r/255, c4b.g/255, c4b.b/255, c4b.a/255);
+    return {c3b:c3b, c4b:c4b, c4f:c4f}; 
+  }
+}
+
+if(!isHtml5){
+  cc.Director.prototype.pauseAllActions = function(){
+    var ret = [];
+    var actionManager = director.getActionManager();
+    var _pausedTargets = director.getActionManager().pauseAllRunningActions();
+    var count = _pausedTargets.count();
+    for(var i = 0; i < count; i++){
+      var obj = _pausedTargets.anyObject();
+      ret.push(obj);
+      _pausedTargets.removeObject(obj);
+    }
+    return ret;
+  }
+  cc.Director.prototype.resumeActions = function(actions){
+    var actionManager = director.getActionManager();
+    for(var i = 0; i < actions.length; i++){
+      actionManager.resumeTarget(actions[i]);
+    }    
+  }
+}else{
+  cc.Director.prototype.pauseAllActions = function(){
+    var actionManager = director.getActionManager();
+    return actionManager.pauseAllRunningActions();
+  }
+  cc.Director.prototype.resumeActions = function(actions){
+    var actionManager = director.getActionManager();
+    return actionManager.resumeTargets(actions);
   }
 }
 
