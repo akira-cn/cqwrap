@@ -21,6 +21,14 @@ define(function(require, exports, module){
 
             this.addChild(label);
 
+            var download = cc.createSprite('res/img/download.png', {
+                anchor: [0.5, 0.5],
+                xy: [size.width/2, 150],
+                scale: 0.75
+            });
+
+            this.addChild(download);
+
             this.pushAction(function(){
 
             });

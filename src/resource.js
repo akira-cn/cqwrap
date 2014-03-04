@@ -7,6 +7,7 @@ var g_resources = [
     {src: 'res/img/code_bird_1.png'},
     {src: 'res/img/code_bird_2.png'},
     {src: 'res/img/flappy_packer.png'},
+    {src: 'res/img/download.png'},
     //plist
     {src: 'res/img/flappy_packer.plist'},
     {src: "res/img/p_rune_fire.plist"},
