@@ -9,12 +9,17 @@ var BaseSprite = cc.Sprite.extend({
         cc.associateWithNative( this, cc.Sprite );            
     },
     init: function(img, rect){
-        var spriteFrame = img && cc.SpriteFrameCache.getInstance().getSpriteFrame(img);
-        if(spriteFrame){
-            this.initWithSpriteFrame(spriteFrame);                
+        if(img instanceof cc.Texture2D){
+            this.initWithTexture(img, rect);
         }else{
-            this._super.apply(this, arguments);
-        }           
+            var spriteFrame = img && cc.SpriteFrameCache.getInstance().getSpriteFrame(img);
+            if(spriteFrame){
+                this.initWithSpriteFrame(spriteFrame); 
+                if(rect) this.setTextureRect(rect);               
+            }else{
+                this._super.apply(this, arguments);
+            }   
+        }        
         this.setCascadeOpacityEnabled(true);
         this.setCascadeColorEnabled(true); 
     }

@@ -27,12 +27,18 @@ var isHtml5 = navigator.userAgent.indexOf('Cocos2dx') < 0;
 var isAndroid = navigator.userAgent.indexOf('Android') >= 0;
 var isIOS = navigator.userAgent.indexOf('iOS') >= 0;
 
-var timers = [null];
-
 cc.isHtml5 = isHtml5;
 cc.isAndroid = isAndroid;
 cc.isIOS = isIOS;
+cc.__defineGetter__('isOpenGL', function(){
+  return cc.isIOS || cc.isAndroid || cc.Browser && cc.Browser.supportWebGL;
+});
 
+if(!cc.isOpenGL){
+  cc.TransitionCrossFade = cc.TransitionFadeBL = cc.TransitionFadeTR = cc.TransitionFade;
+}
+
+var timers = [null];
 function setTimer(target, callback, interval, repeat, delay, paused) {
   if(isHtml5){
     setTimeout(function(){

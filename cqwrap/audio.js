@@ -18,9 +18,8 @@ var Audio = {
     playMusic: function(name){        
         if(audio_enable.music){
             audio.playMusic(name, true);
-        }else{
-            this._music = name;
         }
+        this._music = name;
     },
     pauseMusic: function(){
         if(audio_enable.music){
@@ -44,15 +43,15 @@ var Audio = {
         if(typeof enable !== 'object'){
             enable = {effect: enable, music: enable};
         }
-        audio_enable = enable;
-        
-        if(audio_enable.music == false){
+
+        if(audio_enable.music == true && enable.music == false){
             audio.stopMusic();
-        }else{
+        }else if(audio_enable.music == false && enable.music == true){
             if(this._music){
                 audio.playMusic(this._music);
             }
         }
+        audio_enable = {effect: enable.effect, music: enable.music};
     }
 };
 

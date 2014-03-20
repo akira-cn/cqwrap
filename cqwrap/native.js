@@ -64,6 +64,18 @@ native.call = function(method, params){
     return deferred.promise;
 };
 
+if(cc.isAndroid){
+    global.open = function(url){
+        if(!/^(http(s)?|file):\/\//.test(url)){
+            url = 'file:///android_asset/' + url;
+        }
+        native.call('open', {url: url});
+    },
+    global.close = function(url){
+        //TODO
+    } 
+}
+
 module.exports = native;
 });
     

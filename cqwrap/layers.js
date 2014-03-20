@@ -95,11 +95,11 @@ function delegateTouch(layer, touch, event){
 var GameLayer = BaseLayer.extend({
     init: function () {
         this._super();
-        var offsetY = director.offsetY || 0;
-        this.setPosition(cc.p(0, offsetY));
 
         this._touchTargets = [];
+        this._batches = {};
         this._clickAndMove = true;
+        this._autoDelegate = true;
 
         if(this.backClicked && this.setKeypadEnabled){
             this.setKeypadEnabled(true);
@@ -108,6 +108,12 @@ var GameLayer = BaseLayer.extend({
     onEnter: function(){
         this._super();
         this.registerDelegate();
+        
+        if(this.getParent() instanceof cc.Scene){
+            var offsetY = director.offsetY || 0;
+            this.setPosition(cc.p(0, offsetY));
+        }
+
         if(this.backClicked && typeof(history) !== 'undefined'){
             var self = this;
             history.pushState({}, '');
@@ -130,16 +136,43 @@ var GameLayer = BaseLayer.extend({
                 this._pushState = null;
             }
         }
+        this._batches = {};
         this._super();
     },
     addChild: function(node){
         if(cc.isArray(node)){
+            var args = [].slice.call(arguments);
             for(var i = 0; i < node.length; i++){
-                this.addChild(node[i]);
+                args[0] = node[i];
+                this.addChild.apply(this, args);
             }
         }else{
             this._super.apply(this, arguments);
-            if(node.on){
+            
+            if(this._autoDelegate && node.on){
+                this.delegate(node);
+            }
+        }
+    },
+    addChildToBatch: function(node, batchName){
+        if(cc.isArray(node)){
+            var args = [].slice.call(arguments);
+            for(var i = 0; i < node.length; i++){
+                args[0] = node[i];
+                this.addChildToBatch.apply(this, args);
+            }
+        }else{        
+            var parent;
+            if(this._batches[batchName]){
+                parent = this._batches[batchName];
+            }else{
+                parent = cc.SpriteBatchNode.create(batchName);
+                this._batches[batchName] = parent;
+                GameLayer.prototype.addChild.call(this, parent);
+            }
+            parent.addChild(node);
+
+            if(this._autoDelegate && node.on){
                 this.delegate(node);
             }
         }
@@ -149,6 +182,9 @@ var GameLayer = BaseLayer.extend({
     },
     setClickAndMove: function(clickAndMove){
         this._clickAndMove = clickAndMove;
+    },
+    setAutoDelegate: function(autoDelegate){
+        this._autoDelegate = autoDelegate;
     },
     addSprite: function(sprite, style, parent){
 
@@ -243,11 +279,11 @@ var MaskLayer = GameLayer.extend({
 
 var MaskWithRectLayer = GameLayer.extend({
     init: function(rect, opacity){
-        this._super(opacity);
-        var masks = [ new MaskLayer(),
-                      new MaskLayer(),
-                      new MaskLayer(),
-                      new MaskLayer()];
+        this._super();
+        var masks = [ new MaskLayer(opacity),
+                      new MaskLayer(opacity),
+                      new MaskLayer(opacity),
+                      new MaskLayer(opacity)];
     
         this.addChild(masks);
         this._masks = masks;

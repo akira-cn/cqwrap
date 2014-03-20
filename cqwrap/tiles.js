@@ -1,16 +1,22 @@
 define(function(require, exports, module){
 
-var BaseNode = require('cqwrap/nodes').BaseNode;
+var GameLayer = require('cqwrap/layers').GameLayer;
 
-var TileNode = BaseNode.extend({
+var TileNode = GameLayer.extend({
     init: function(width, height){
+        this._super();
         height = height || width;
         this.width = width;
         this.height = height;
+        this.setAutoDelegate(false);
     },
     addChild: function(sprite, x, y) {
         this.setXY(sprite, x, y);
         this._super(sprite);
+    },
+    addChildToBatch: function(sprite, x, y, batchName) {
+        this.setXY(sprite, x, y);
+        this._super(sprite, batchName);
     },
     setXY: function(sprite, x, y) {
         if(!sprite._pos){
