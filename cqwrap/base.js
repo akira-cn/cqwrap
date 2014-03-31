@@ -207,7 +207,7 @@ cc.random = function(n, m){
     m = m || 0;
     return 0 | (n + Math.random() * (m - n));
   }
-  if(n instanceof Array){
+  else if(n instanceof Array){
     var len = n.length;
     if(m == null){
       return n[0 | Math.random() * (len)];
@@ -215,6 +215,9 @@ cc.random = function(n, m){
       var ret = cc.arrayShuffle(n.slice(0));
       return ret.slice(0, m);
     }   
+  }
+  else{
+    return Math.random();
   }
 }
 

@@ -31,18 +31,19 @@ var TileNode = GameLayer.extend({
         this.setXY(sprite, point.x, point.y);
     },
     locationToPoint: function(location) {
-        var pos = this.getPosition();
-        var x = 0 | (location.x - pos.x) / this.width,
-            y = 0 | (location.y - pos.y) / this.height;
+        location = this.convertToNodeSpace(location);
+        var x = 0 | location.x / this.width,
+            y = 0 | location.y / this.height;
 
         return cc.p(x, y);
     },
     pointToLocation: function(point, anchor) {
         anchor = anchor || cc.p(0.5, 0.5);
         var pos = this.getPosition();
+        var scaleX = this.getScaleX(), scaleY = this.getScaleY();
 
-        return cc.p(pos.x + (point.x + anchor.x) * this.width,
-            pos.y + (point.y + anchor.y) * this.height);
+        return cc.p(pos.x + (point.x + anchor.x) * this.width * scaleX,
+            pos.y + (point.y + anchor.y) * this.height) * scaleY;
     }
 });
 

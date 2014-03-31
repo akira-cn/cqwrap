@@ -98,6 +98,8 @@ var GameLayer = BaseLayer.extend({
 
         this._touchTargets = [];
         this._batches = {};
+
+        //if this property was set to false, touch move will cancel click event
         this._clickAndMove = true;
         this._autoDelegate = true;
 
@@ -168,6 +170,7 @@ var GameLayer = BaseLayer.extend({
             }else{
                 parent = cc.SpriteBatchNode.create(batchName);
                 this._batches[batchName] = parent;
+                parent.setZOrder(10);
                 GameLayer.prototype.addChild.call(this, parent);
             }
             parent.addChild(node);

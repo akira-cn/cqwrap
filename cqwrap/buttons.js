@@ -10,6 +10,8 @@ var Button = BaseSprite.extend({
     init: function(style, event, callback){
         var self = this, sprite = this;
 
+        this.enabled = true;
+
         if(typeof event === 'function'){
             callback = event;
             event = 'click';
@@ -32,10 +34,11 @@ var Button = BaseSprite.extend({
 
         if(callback){
             this.on('touchstart', function(){
+                if(!self.enabled) return;
                 if(!self.activated){
                     var scale = self.getScaleY(); 
                     self.setScale(scale * 0.95);
-                    sprite.setOpacity(sprite.getOpacity() * 0.8);
+                    //sprite.setOpacity(sprite.getOpacity() * 0.8);
                     self.activated = true;
                 }
             });
@@ -44,12 +47,15 @@ var Button = BaseSprite.extend({
                 if(self.activated){
                     var scale = self.getScaleY();
                     self.setScale(scale / 0.95);
-                    sprite.setOpacity(sprite.getOpacity() / 0.8);
+                    //sprite.setOpacity(sprite.getOpacity() / 0.8);
                     self.activated = false;
                 }
             });
             
-            this.on(event, callback);
+            this.on(event, function(){
+                if(!self.enabled) return;
+                callback.apply(this, arguments);
+            });
         }
         
         function setSprite(){

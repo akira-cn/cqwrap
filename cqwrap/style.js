@@ -8,6 +8,16 @@ function camelize(s) {
     });
 }
 
+/*
+    used for android
+    ios just set 'Fonts provided by application' attribute to Info.plist
+*/
+var ttfMap = {};  
+
+cc.registerTTF  = function(fontName, fontFile){
+    ttfMap[fontName] = fontFile;    
+} 
+
 var styleMap = {
     /**
         anchor: 0.5,0.5
@@ -221,6 +231,10 @@ var styleMap = {
      */
     fontFamily : {
         set: function(node, value){
+            if(!cc.isIOS){
+                value = ttfMap[value] || value;
+            }
+
             if(node && node.setFontName){
                 node.setFontName(value);
                 return true;
