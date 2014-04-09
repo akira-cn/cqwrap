@@ -43,7 +43,7 @@ var TileNode = GameLayer.extend({
         var scaleX = this.getScaleX(), scaleY = this.getScaleY();
 
         return cc.p(pos.x + (point.x + anchor.x) * this.width * scaleX,
-            pos.y + (point.y + anchor.y) * this.height) * scaleY;
+            pos.y + (point.y + anchor.y) * this.height * scaleY);
     }
 });
 

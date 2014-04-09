@@ -4,15 +4,51 @@ define(function(require, exports, module){
 
 var EventEmitter = require('cqwrap/events').EventEmitter;
 var BaseSprite = require('cqwrap/sprites').BaseSprite;
+var when = require('cqwrap/when');
 
 var BaseLayer = cc.Layer.extend({
     ctor: function(){
         this._super();
+        this._contextDefer = when.defer();
         this.init.apply(this, arguments);
         cc.associateWithNative( this, cc.Layer );
     },
+    getContext: function(){
+        var deferred = this._contextDefer;
+        return deferred.promise; 
+    },
+    publish: function(){
+        var args = [].slice.apply(arguments);
+        this.getContext().then(function(context){
+            if(!context.__pubsubEmitter){
+                context.__pubsubEmitter = new EventEmitter();
+            }
+            context.setTimeout(function(){
+                context.__pubsubEmitter.emit.apply(context, args);
+            }, 0); 
+        });
+    },
+    subscribe: function(){
+        var args = [].slice.apply(arguments);
+        this.getContext().then(function(context){
+            if(!context.__pubsubEmitter){
+                context.__pubsubEmitter = new EventEmitter();
+            }
+            context.__pubsubEmitter.on.apply(context, args);
+        });        
+    },
+    unsubscribe: function(){
+        var args = [].slice.apply(arguments);
+        this.getContext().then(function(context){
+            if(!context.__pubsubEmitter){
+                context.__pubsubEmitter = new EventEmitter();
+            }
+            context.__pubsubEmitter.removeListener.apply(context, args);
+        });          
+    },
     onEnter: function(){
         this._super();
+        this._contextDefer.resolve(this.getParent());
     },
     onExit: function(){
         this._super();
