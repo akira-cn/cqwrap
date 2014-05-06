@@ -55,6 +55,10 @@ var Button = BaseSprite.extend({
             this.on(event, function(){
                 if(!self.enabled) return;
                 callback.apply(this, arguments);
+                self.enabled = false;
+                setTimeout(function(){
+                    self.enabled = true;
+                }, 300);
             });
         }
         
@@ -86,7 +90,7 @@ var Button = BaseSprite.extend({
         }
 
         this.isEnabled = function(){
-            return callback != null;
+            return this.enabled && callback != null;
         }
     }
 });

@@ -30,13 +30,17 @@ var TileNode = GameLayer.extend({
     setPoint: function(sprite, point){
         this.setXY(sprite, point.x, point.y);
     },
+    //相对父容器
     locationToPoint: function(location) {
-        location = this.convertToNodeSpace(location);
-        var x = 0 | location.x / this.width,
-            y = 0 | location.y / this.height;
+        //location = this.convertToNodeSpace(location);
+        var pos = this.getPosition();
+
+        var x = 0 | (location.x - pos.x) / this.width,
+            y = 0 | (location.y - pos.y) / this.height;
 
         return cc.p(x, y);
     },
+    //相对父容器
     pointToLocation: function(point, anchor) {
         anchor = anchor || cc.p(0.5, 0.5);
         var pos = this.getPosition();

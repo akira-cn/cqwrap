@@ -139,6 +139,8 @@ var GameLayer = BaseLayer.extend({
         this._clickAndMove = true;
         this._autoDelegate = true;
 
+        this._retainNodes = [];
+
         if(this.backClicked && this.setKeypadEnabled){
             this.setKeypadEnabled(true);
         }
@@ -163,10 +165,24 @@ var GameLayer = BaseLayer.extend({
             window.addEventListener('popstate', backClicked);
         }
     },
+    retainNode: function(){
+        for(var i = 0; i < arguments.length; i++){
+            var node  = arguments[i];
+            if(this._retainNodes.indexOf(node) < 0){
+                node.retain();
+                this._retainNodes.push(node)
+            }
+        }
+    },
     onExit: function(){
         //for(var i = 0; i < this._touchTargets.length; i++){
         //    this._touchTargets[i].removeAllListeners();
         //}
+
+        for(var i = 0; i < this._retainNodes.length; i++){
+            this._retainNodes[i].release();
+        }
+
         this.unregisterDelegate();
         if(this.backClicked && typeof(history) !== 'undefined'){
             if(this._pushState){

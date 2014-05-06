@@ -15,7 +15,7 @@ var Audio = {
             audio.playEffect(name, false);
         }
     },
-    playMusic: function(name){        
+    playMusic: function(name){       
         if(audio_enable.music){
             audio.playMusic(name, true);
         }
