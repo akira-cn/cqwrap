@@ -83,7 +83,6 @@ var ScrollView = cc.ScrollView.extend({
             if(startOffset){
                 var dur = Date.now() - startTime;
                 var offset = self.getContentOffset();
-                cc.log(offset);
                 var speed = cc.p((offset.x - startOffset.x)/dur, (offset.y - startOffset.y)/dur);
                 var t = 500;
                 var minOffset = self.minContainerOffset();
@@ -102,10 +101,6 @@ var ScrollView = cc.ScrollView.extend({
                 scrollLayer.moveTo(t/1000,s , cc.EaseOut, 2).act();
             }
         });
-    },
-    onEnter: function(){
-        this._super();
-        cc.log(this.maxContainerOffset());
     }
 });
 

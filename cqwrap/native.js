@@ -8,9 +8,17 @@ var id = 0,
     callbacks = [];
 
 if(!global.native){
-    global.native = {postMessage: function(){
+    var _native = {postMessage: function(){
         cc.log('native interface not found, ignored.');
     }};
+
+    Object.defineProperty(global, 'native', {
+      get: function(){
+        return _native;
+      },
+      enumerable: true,
+      configurable: false,
+    });
 }
 
 Object.defineProperty(native, 'onmessage', {
