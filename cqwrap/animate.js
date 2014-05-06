@@ -229,6 +229,9 @@ cc.mixin(AnimationTask.prototype, {
 cc.Node.prototype.act = function(action){
 
     if(action){    
+        if(action instanceof AnimationTask && action.getActions().length > 0){
+            action = cc.Sequence.create.apply(cc.Sequence, action.getActions()); 
+        }
         this.runAction(action);
     }else if(this.getActions().length > 0){
         action = cc.Sequence.create.apply(cc.Sequence, this.getActions()); 
@@ -238,6 +241,7 @@ cc.Node.prototype.act = function(action){
     
     return this;  
 }
+
 
 cc.mixin(cc.Node.prototype, new AnimationTask());
 
