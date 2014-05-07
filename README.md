@@ -14,7 +14,7 @@ cd my_game
 
 visit http://localhost:8000
 
-## publish
+## build
 
 ```bash
 npm install -g requirejs
