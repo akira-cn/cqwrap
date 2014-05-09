@@ -225,6 +225,20 @@ var styleMap = {
         }
     },
 
+    backgroundColor: {
+        set: function(node, value){
+            if(node){
+                value = cc.color(value).c4b;
+                var colorLayer = cc.LayerColor.create(value);
+                colorLayer.setZOrder(-1);
+                colorLayer.setContentSize(node.getContentSize());
+                node.addChild(colorLayer);
+                return true;
+            }
+            return false;
+        }
+    },
+
     /**
         fontFamily: "Times New Roman"
         font-family: "Times New Roman"

@@ -42,7 +42,7 @@ var TouchCaptureLayer = cc.Layer.extend({
     }
 });
 
-var ScrollView = cc.ScrollView.extend({
+var BaseScrollView = cc.ScrollView.extend({
     ctor: function(viewport, contentSize){
         this._super.apply(this, arguments);
         this.init.apply(this, arguments);
@@ -60,6 +60,14 @@ var ScrollView = cc.ScrollView.extend({
         this.getContentLayer = function(){
             return scrollLayer;
         }       
+    }
+});
+
+var ScrollView = BaseScrollView.extend({
+    init: function(viewport, contentSize){
+        this._super(viewport, contentSize);
+
+        var scrollLayer = this.getContentLayer();
 
         var touchCaptureLayer = new TouchCaptureLayer();
         this.addChild(touchCaptureLayer);
@@ -67,7 +75,7 @@ var ScrollView = cc.ScrollView.extend({
         var self = this;
         var startTime, startOffset;
 
-        touchCaptureLayer.on('startscroll', function(touch, event){
+        touchCaptureLayer.on('beforescroll', function(touch, event){
             scrollLayer.stopAllActions();
         });
 
@@ -90,7 +98,7 @@ var ScrollView = cc.ScrollView.extend({
                 var s = cc.p(0.5 * speed.x * t, 0.5 * speed.y * t);
 
                 s = cc.pAdd(offset, s);
-                //s = cc.p(Math.round(s.x), Math.round(s.y));
+
                 if(s.x < minOffset.x || s.y < minOffset.y){
                     return;
                 }
@@ -104,12 +112,140 @@ var ScrollView = cc.ScrollView.extend({
     }
 });
 
+var PageView = BaseScrollView.extend({
+    init: function(viewport, pagewidth, pages){
+        if(arguments.length <= 2){
+            pages = pagewidth;
+            pagewidth = viewport.width;
+        }
+        var offsetX = 0.5 * (viewport.width - pagewidth);
+        this._offsetX = offsetX;
+
+        var contentSize = cc.size(pagewidth * pages + 2 * offsetX, viewport.height);
+        this._super(viewport, contentSize);
+        //this.setBounceable(false);
+
+        cc.mixin(this, new EventEmitter);
+
+        this.setStyle('direction', cc.SCROLLVIEW_DIRECTION_HORIZONTAL);
+
+        this._pagewidth = pagewidth;
+
+        var scrollLayer = this.getContentLayer();
+        for(var i = 0; i < pages; i++){
+            var pageLayer = new GameLayer();
+            
+            pageLayer.setStyle({
+                xy: [offsetX + pagewidth * i, 0],
+                tag: i,
+                size: [pagewidth, viewport.height],
+                //backgroundColor: 'rgb('+i*50+',88,87)'
+            });
+            scrollLayer.addChild(pageLayer);
+        }
+
+        var touchCaptureLayer = new TouchCaptureLayer();
+        this.addChild(touchCaptureLayer);
+
+        var self = this;
+        var startTime, startOffset, currentPage;
+
+        touchCaptureLayer.on('beforescroll', function(touch, event){
+            scrollLayer.stopAllActions();
+            currentPage = self.getPage();
+        });
+
+        touchCaptureLayer.on('scroll', function(touch, event){
+            var now = Date.now();
+            if(!startTime || now - startTime > 500){
+                startOffset = self.getContentOffset();
+                startTime = Date.now();
+            }
+        });
+
+        touchCaptureLayer.on('afterscroll', function(touch, event){
+            if(startOffset){
+                //cc.log(self.getContentOffset());
+                var dur = Date.now() - startTime;
+                var offset = self.getContentOffset();
+                var minOffset = self.minContainerOffset();
+                var maxOffset = self.maxContainerOffset();
+
+                if(offset.x < minOffset.x){
+                    self.setPage(self.getMaxPage(), -1);
+                    return;
+                }
+                if(offset.x > maxOffset.x){
+                    self.setPage(0, -1);
+                    return;
+                }
+
+                var speed = cc.p((offset.x - startOffset.x)/dur, (offset.y - startOffset.y)/dur);
+                //cc.log(offset, speed.x );
+                if(Math.abs(speed.x) > 0.3){
+                    var t = 500;
+                    if(speed.x > 0){
+                        //move left
+                        var page = Math.max(0, currentPage - 1);
+                        self.setPage(page, 0.2);
+                        
+                    }else{
+                        //move right
+                        var page = Math.min(self.getMaxPage(), currentPage + 1);
+                        self.setPage(page, 0.2);
+                    }
+                }else{
+                    self.setPage(self.getPage(), 0.2);
+                }
+            }else{
+                self.setPage(self.getPage(), 0.2);
+            }
+        });
+
+        this._page = 0;
+    },
+    setPage: function(page, dur){
+        var oldPage = this._page;
+        
+        if(oldPage != page){
+            this.emit('change', page, oldPage);
+        }
+
+        dur = dur || 0;
+
+        if(dur >= 0){
+            var self = this;
+            var offset = cc.p(-this._pagewidth * page, 0);
+
+            var scrollLayer = this.getContentLayer();
+            scrollLayer.stopAllActions();
+            scrollLayer.moveTo(dur, offset).then(function(){
+                scrollLayer.moveTo(dur, offset).act();
+            }).act();
+        }
+
+        this._page = page;
+    },
+    getPage: function(){
+        var offsetX = this.getContentOffset().x;
+        return Math.min(Math.round(-offsetX / this._pagewidth), this.getMaxPage());
+    },
+    getPageLayer: function(page){
+        return this.getContentLayer().getChildByTag(page);
+    },
+    getMaxPage: function(){
+        var offsetX = this.minContainerOffset().x;
+        return Math.round(-offsetX / this._pagewidth);        
+    }
+});
+
 ScrollView.create = function(viewport, contentSize){
     return new ScrollView(viewport, contentSize);
 }
 
 module.exports = {
-    ScrollView: ScrollView
+    ScrollView: ScrollView,
+    PageView: PageView,
 };
 
 });

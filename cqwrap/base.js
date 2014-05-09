@@ -30,9 +30,7 @@ var isIOS = navigator.userAgent.indexOf('iOS') >= 0;
 cc.isHtml5 = isHtml5;
 cc.isAndroid = isAndroid;
 cc.isIOS = isIOS;
-cc.__defineGetter__('isOpenGL', function(){
-  return cc.isIOS || cc.isAndroid || cc.Browser && cc.Browser.supportWebGL;
-});
+cc.isOpenGL = isIOS || isAndroid || cc.Browser && cc.Browser.supportWebGL;
 
 if(!cc.isOpenGL){
   cc.TransitionCrossFade = cc.TransitionFadeBL = cc.TransitionFadeTR = cc.TransitionFade;
@@ -328,6 +326,8 @@ if(!isHtml5){
     var actionManager = director.getActionManager();
     return actionManager.resumeTargets(actions);
   }
+  //修复 director.end
+  cc.Director.prototype.end = function(){}
 }
 
 })(this);
