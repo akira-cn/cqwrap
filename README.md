@@ -5,6 +5,8 @@ cqwrap
 
 the cocos2d-html5 game creator
 
+(If you got an error while create the game project on windows, use administrator to run console.)
+
 ```bash
 npm install -g cqwrap
 cqwrap -o my_game
