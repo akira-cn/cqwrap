@@ -34,9 +34,10 @@ var TileNode = GameLayer.extend({
     locationToPoint: function(location) {
         //location = this.convertToNodeSpace(location);
         var pos = this.getPosition();
+        var scaleX = this.getScaleX(), scaleY = this.getScaleY();
 
-        var x = 0 | (location.x - pos.x) / this.width,
-            y = 0 | (location.y - pos.y) / this.height;
+        var x = 0 | (location.x - pos.x) / (this.width * scaleX),
+            y = 0 | (location.y - pos.y) / (this.height * scaleY);
 
         return cc.p(x, y);
     },

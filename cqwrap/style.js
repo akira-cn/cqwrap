@@ -106,7 +106,8 @@ var styleMap = {
         },
         get: function(node){
             if(node && node.getPosition){
-                return node.getPosition();
+                var pos = node.getPosition();
+                return cc.p(pos.x, pos.y);
             }
         }
     },

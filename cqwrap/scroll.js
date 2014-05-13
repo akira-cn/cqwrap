@@ -8,7 +8,9 @@ var EventEmitter = require('cqwrap/events').EventEmitter;
 var ScrollLayer = GameLayer.extend({
     onEnter: function(){
         this._super();
-        this.setTouchRect(this.getParent().getBoundingBox());
+        if(!this._touchRect){
+            this.setTouchRect(this.getParent().getBoundingBox());
+        }
         this.getParent().setTouchPriority(this.getTouchPriority() - 1);
     }
 });
@@ -71,12 +73,14 @@ var ScrollView = BaseScrollView.extend({
 
         var touchCaptureLayer = new TouchCaptureLayer();
         this.addChild(touchCaptureLayer);
+        this._touchCaptureLayer = touchCaptureLayer;
 
         var self = this;
-        var startTime, startOffset;
+        var startTime, startOffset, originOffset;
 
         touchCaptureLayer.on('beforescroll', function(touch, event){
             scrollLayer.stopAllActions();
+            originOffset = self.getContentOffset();
         });
 
         touchCaptureLayer.on('scroll', function(touch, event){
@@ -89,9 +93,9 @@ var ScrollView = BaseScrollView.extend({
 
         touchCaptureLayer.on('afterscroll', function(touch, event){
             if(startOffset){
-                var dur = Date.now() - startTime;
                 var offset = self.getContentOffset();
-                var speed = cc.p((offset.x - startOffset.x)/dur, (offset.y - startOffset.y)/dur);
+                var dur = Date.now() - startTime;
+                var speed = cc.p((offset.x - startOffset.x)/dur, (offset.y - startOffset.y)/dur);             
                 var t = 500;
                 var minOffset = self.minContainerOffset();
                 var maxOffset = self.maxContainerOffset();
@@ -127,6 +131,10 @@ var PageView = BaseScrollView.extend({
 
         cc.mixin(this, new EventEmitter);
 
+        this.on('touchstart', function(touch){
+            touch.preventDefault();
+        });
+
         this.setStyle('direction', cc.SCROLLVIEW_DIRECTION_HORIZONTAL);
 
         this._pagewidth = pagewidth;
@@ -141,6 +149,8 @@ var PageView = BaseScrollView.extend({
                 size: [pagewidth, viewport.height],
                 //backgroundColor: 'rgb('+i*50+',88,87)'
             });
+            pageLayer.setClickAndMove(false);
+
             scrollLayer.addChild(pageLayer);
         }
 
@@ -148,11 +158,12 @@ var PageView = BaseScrollView.extend({
         this.addChild(touchCaptureLayer);
 
         var self = this;
-        var startTime, startOffset, currentPage;
+        var startTime, startOffset, originOffset, currentPage;
 
         touchCaptureLayer.on('beforescroll', function(touch, event){
             scrollLayer.stopAllActions();
             currentPage = self.getPage();
+            originOffset = self.getContentOffset();
         });
 
         touchCaptureLayer.on('scroll', function(touch, event){
@@ -165,9 +176,8 @@ var PageView = BaseScrollView.extend({
 
         touchCaptureLayer.on('afterscroll', function(touch, event){
             if(startOffset){
-                //cc.log(self.getContentOffset());
-                var dur = Date.now() - startTime;
                 var offset = self.getContentOffset();
+                var dur = Date.now() - startTime;
                 var minOffset = self.minContainerOffset();
                 var maxOffset = self.maxContainerOffset();
 
@@ -181,6 +191,11 @@ var PageView = BaseScrollView.extend({
                 }
 
                 var speed = cc.p((offset.x - startOffset.x)/dur, (offset.y - startOffset.y)/dur);
+                
+                if(Math.max(offset.x - originOffset.x, offset.y - originOffset.y) < 15){
+                    speed = 0;
+                }
+
                 //cc.log(offset, speed.x );
                 if(Math.abs(speed.x) > 0.3){
                     var t = 500;
@@ -202,12 +217,12 @@ var PageView = BaseScrollView.extend({
             }
         });
 
-        this._page = 0;
+        this._page = null;
     },
     setPage: function(page, dur){
         var oldPage = this._page;
         
-        if(oldPage != page){
+        if(oldPage !== page){
             this.emit('change', page, oldPage);
         }
 

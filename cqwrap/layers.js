@@ -76,6 +76,7 @@ var BgLayer = BaseLayer.extend({
 function delegateTouch(layer, touch, event){
     var touchLocation = touch.getLocation();
     var targets = layer._touchTargets;
+    touch.returnValue = true;
 
     for(var i = 0; i < targets.length; i++){
         var node = targets[i];
@@ -109,6 +110,7 @@ function delegateTouch(layer, touch, event){
                 delete layer._touchedTarget;
             }
 
+            //touch.returnValue = node.emit(event, touch, node, layer) && touch.returnValue;
             node.emit(event, touch, node, layer);
             return touch.returnValue;
         } 
@@ -257,6 +259,7 @@ var GameLayer = BaseLayer.extend({
                 cc.mixin(node, new EventEmitter);
             }
             this._touchTargets.unshift(node);
+
             this._touchTargets.sort(function(a, b){
                 return b.getZOrder() - a.getZOrder();
             });
@@ -276,13 +279,24 @@ var GameLayer = BaseLayer.extend({
             }
         }
     },
+    getAbsoulteZOrder: function(){
+        var p = this;
+        var zOrder = 0;
+        while(p){
+            zOrder += p.getZOrder();
+            p = p.getParent();
+        }
+        return zOrder;
+    },
     registerDelegate: function(){
         cc.registerTargetedDelegate(parseInt(-this.getZOrder()), true, this);
+        //cc.registerTargetedDelegate(parseInt(-this.getAbsoulteZOrder()), true, this);
     },
     unregisterDelegate: function(){
         cc.unregisterTouchDelegate(this);
     },
     onTouchBegan: function(touch, event){
+        //cc.log(this._touchRect);
         if(this._touchRect){
             if(!cc.rectContainsPoint(this._touchRect, touch.getLocation())){
                 return false;
