@@ -149,6 +149,11 @@ var PageView = BaseScrollView.extend({
                 size: [pagewidth, viewport.height],
                 //backgroundColor: 'rgb('+i*50+',88,87)'
             });
+
+            if(cc.isHtml5){
+                pageLayer.setStyle('zOrder', 1);
+            }
+
             pageLayer.setClickAndMove(false);
 
             scrollLayer.addChild(pageLayer);

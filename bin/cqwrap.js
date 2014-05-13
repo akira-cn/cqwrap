@@ -48,5 +48,8 @@ if(fs.existsSync('./'+ gameDir)){
     fs.symlinkSync(templateDir + '/server.sh',
             gameDir + '/server.sh', FN); 
 
+    fs.symlinkSync(templateDir + '/server.bat',
+            gameDir + '/server.bat', FN); 
+
     console.log('done!');          
 }

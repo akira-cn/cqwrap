@@ -32,9 +32,11 @@ var Button = BaseSprite.extend({
 
         cc.mixin(this, new EventEmitter);
 
+        var locked = false; //防止重复点击
+
         if(callback){
             this.on('touchstart', function(){
-                if(!self.enabled) return;
+                if(!self.enabled || locked) return;
                 if(!self.activated){
                     var scale = self.getScaleY(); 
                     self.setScale(scale * 0.95);
@@ -53,11 +55,11 @@ var Button = BaseSprite.extend({
             });
             
             this.on(event, function(){
-                if(!self.enabled) return;
+                if(!self.enabled || locked) return;
                 callback.apply(this, arguments);
-                self.enabled = false;
+                locked = true;
                 setTimeout(function(){
-                    self.enabled = true;
+                    locked = false;
                 }, 300);
             });
         }
