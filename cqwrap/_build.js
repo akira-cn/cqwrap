@@ -1,0 +1,1 @@
+require(['cqwrap/index.js'], function(){});

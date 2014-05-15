@@ -4,5 +4,5 @@
     name: "./main-src",
     out: "dist/main.js",
     removeCombined: true,
-    //exclude: [ "cqwrap/index.js" ]
+    exclude: [ "cqwrap/index" ]
 }

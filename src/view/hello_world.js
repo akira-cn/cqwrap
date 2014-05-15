@@ -51,6 +51,9 @@ define(function(require, exports, module){
             ];
             drawNode.drawPoly(star, cc.c4f(1,0,0,0.5), 1, cc.c4f(0,0,1,1) );
 
+            //drawNode.drawDot(cc.p(o, o), 100, cc.c4f( Math.random(), Math.random(), Math.random(), 1));
+            //drawNode.setStyle('scaleY', 0.8);
+
             this.addChild(drawNode);
         }
     });

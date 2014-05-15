@@ -4,6 +4,8 @@
 
 (function(global){
 
+define(function(require, exports, module){
+
 'use strict';
 
 if(!global.console){
@@ -329,5 +331,7 @@ if(!isHtml5){
   //修复 director.end
   cc.Director.prototype.end = function(){}
 }
+
+});
 
 })(this);
