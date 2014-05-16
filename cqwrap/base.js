@@ -319,6 +319,13 @@ if(!isHtml5){
       actionManager.resumeTarget(actions[i]);
     }    
   }
+  
+  if(cc.RESOLUTION_POLICY.EXACT_FIT == null){
+    cc.RESOLUTION_POLICY.EXACT_FIT = cc.RESOLUTION_POLICY.EXACTFIT;
+    cc.RESOLUTION_POLICY.NO_BORDER = cc.RESOLUTION_POLICY.NOBORDER;
+    cc.RESOLUTION_POLICY.FIXED_HEIGHT = cc.RESOLUTION_POLICY.HEIGHT;
+    cc.RESOLUTION_POLICY.FIXED_WIDTH = cc.RESOLUTION_POLICY.WIDTH;
+  }
 }else{
   cc.Director.prototype.pauseAllActions = function(){
     var actionManager = director.getActionManager();
