@@ -27,6 +27,5 @@ r.js -o build.js
 ```
 
 ```bash
-mv main.js main-src.js
-mv dist/main.js .
+cp dist/main.js main.js
 ```
