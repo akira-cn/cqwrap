@@ -8,8 +8,11 @@ var id = 0,
     callbacks = [];
 
 if(!global.native){
-    var _native = {postMessage: function(){
-        cc.log('native interface not found, ignored.');
+    var _native = {postMessage: function(data){
+        //cc.log('native interface not found, ignored.');
+        var msg = JSON.parse(data);
+        msg.error = 'native interface not found, ignored.'
+        native.onmessage(JSON.stringify(msg));
     }};
 
     Object.defineProperty(global, 'native', {
@@ -60,16 +63,20 @@ native.call = function(method, params){
     };
 
     callbacks[data.id] = function(data){
-        if(data.result){
-            deferred.resolve(data.result);
-        }else{
+        if(data.error){
             deferred.reject(data.error);
+        }else{
+            deferred.resolve(data.result);
         }
     }
 
     native.postMessage(JSON.stringify(data));
+    var acts = director.pauseAllActions();
 
-    return deferred.promise;
+    return deferred.promise.always(function(res){
+        director.resumeActions(acts);
+        return res;
+    });
 };
 
 if(cc.isAndroid){

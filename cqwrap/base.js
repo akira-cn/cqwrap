@@ -339,6 +339,24 @@ if(!isHtml5){
   cc.Director.prototype.end = function(){}
 }
 
+cc.showMessage = function(container, msg, width, height){
+  width = width || 250;
+  height = height || 80;
+  var mask = cc.LayerColor.create(cc.c4b(0, 0, 0, 192));
+  var winSize = director.getWinSize();
+
+  mask.setContentSize(width, height);
+  mask.setPosition(winSize.width / 2 - width / 2, winSize.height / 2 - height / 2);
+  container.addChild(mask, 9999);
+
+  var loadingText = cc.createSprite('@' + msg, {
+      xy: [width / 2, height / 2],
+      fontSize: 26
+  });
+  mask.addChild(loadingText);
+  return mask;
+}
+
 });
 
 })(this);
