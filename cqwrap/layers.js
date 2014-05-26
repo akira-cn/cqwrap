@@ -329,7 +329,7 @@ var GameLayer = BaseLayer.extend({
     }
 });
 
-var MaskLayer = GameLayer.extend({
+var MaskLayer = BaseLayer.extend({
     init: function(opacity){
         opacity = opacity || 128;
         this._super();

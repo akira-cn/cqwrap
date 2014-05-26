@@ -71,12 +71,8 @@ native.call = function(method, params){
     }
 
     native.postMessage(JSON.stringify(data));
-    var acts = director.pauseAllActions();
 
-    return deferred.promise.always(function(res){
-        director.resumeActions(acts);
-        return res;
-    });
+    return deferred.promise;
 };
 
 if(cc.isAndroid){

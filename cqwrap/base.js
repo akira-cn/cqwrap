@@ -284,12 +284,24 @@ function hex_color_to_cxb(str){
     c4b = cc.c4b.apply(null, values);
     c4f = cc.c4f(c4b.r/255, c4b.g/255, c4b.b/255, c4b.a/255);
     return {c3b:c3b, c4b:c4b, c4f:c4f};    
+  }else if(isFunction(cc[str])){
+    var ret = cc[str]();   //cc.red(), etc.
+    cc.Assert(ret instanceof cc.Color3B);
+    if(ret instanceof cc.Color3B){
+      return cc.color(ret);
+    }
   }
 }
 
 cc.color = function(r, g, b, a){
   if(typeof(r) === 'string'){
     return hex_color_to_cxb(r);
+  }else if(r instanceof cc.Color3B){
+    return cc.color(r.r, r.g, r.b); 
+  }else if(r instanceof cc.Color4B){
+    return cc.color(r.r, r.g, r.b, r.a);
+  }else if(r instanceof cc.Color4F){
+    return cc.color(255 * r.r, 255 * r.g, 255 * r.b, 255 * r.a);
   }else{
     a = a || 255;
     var c3b, c4b, c4f;
