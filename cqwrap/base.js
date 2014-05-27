@@ -369,6 +369,20 @@ cc.showMessage = function(container, msg, width, height){
   return mask;
 }
 
+cc.getSpriteFrame = function(key){
+    var cache = cc.SpriteFrameCache.getInstance();
+    var frame = cache.getSpriteFrame(key);
+
+    if(!frame){
+        var texture = cc.TextureCache.getInstance().addImage(key);
+        var size = texture.getContentSize();
+        var frame = new cc.SpriteFrame();
+        frame.initWithTexture(texture, cc.rect(0, 0, size.width, size.height));
+    }
+
+    return frame;
+}
+
 });
 
 })(this);

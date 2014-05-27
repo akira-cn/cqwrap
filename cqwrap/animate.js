@@ -8,13 +8,12 @@ var AnimationTool = {};
 var BaseSprite = require('cqwrap/sprites').BaseSprite;
 
 var getAnimFrames = function(name) {
-    var cache = cc.SpriteFrameCache.getInstance(),
-        frames = [],
+    var frames = [],
         i = 0;
 
     do {
         var frameName = name.replace('%d', i),
-            frame = cache.getSpriteFrame(frameName);
+            frame = cc.getSpriteFrame(frameName);
         
         if(frame) {
             frames.push(frame);
@@ -160,9 +159,8 @@ cc.mixin(AnimationTask.prototype, {
         if(/%d/.test(frames[0])){
             frames = getAnimFrames(frames[0]);
         }else{
-            var cache = cc.SpriteFrameCache.getInstance();
             frames = frames.map(function(frameName){
-                return cache.getSpriteFrame(frameName);
+                return cc.getSpriteFrame(frameName);
             });
         }
 
