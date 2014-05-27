@@ -30,7 +30,7 @@ require.config({
 });
 
 
-require(['dist/cqwrap', 'src/resource', 'src/view/hello_world'], function(_, _, FirstScene){
+require(['cqwrap/index', 'src/resource', 'src/view/hello_world'], function(_, _, FirstScene){
     var Cocos2dApp = cc.Application.extend({
         config:document['ccConfig'],
         ctor:function (scene) {
@@ -62,7 +62,6 @@ require(['dist/cqwrap', 'src/resource', 'src/view/hello_world'], function(_, _, 
 
             //load resources
             cc.LoaderScene.preload(g_resources, function () {
-                cc.log(this);
                 director.replaceScene(new this.startScene());
             }, this);
 

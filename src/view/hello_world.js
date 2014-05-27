@@ -37,6 +37,14 @@ define(function(require, exports, module){
 
             this.addChild(closeBtn);
 
+            closeBtn.on('mouseenter', function(){
+                if(cc.canvas) cc.canvas.style.cursor = 'pointer';
+            });
+            
+            closeBtn.on('mouseleave', function(){
+                if(cc.canvas) cc.canvas.style.cursor = '';
+            });
+
             var drawNode = cc.DrawNode.create();
             
             // star poly (doesn't trigger bug... order is important un tesselation is supported.

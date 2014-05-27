@@ -95,6 +95,17 @@ function delegateTouch(layer, touch, event){
                 layer._currentTarget = node;
             }
 
+            if(event === 'mousemove'){
+                if(layer._mouseoverTarget !== node){
+                    if(layer._mouseoverTarget){
+                        layer._mouseoverTarget.emit('mouseleave', touch, layer._mouseoverTarget, layer);
+                    }
+                    node.emit('mouseenter', touch, node, layer);
+                }
+                layer._mouseoverTarget = node;
+                node.emit('mousemove', touch, node, layer);
+            }
+
             if(event === 'touchmove' && node !== layer._currentTarget){
                 if(layer._currentTarget){
                     layer._currentTarget.emit('touchleave', touch, layer._currentTarget, layer);
@@ -127,6 +138,11 @@ function delegateTouch(layer, touch, event){
         delete layer._touchedTarget;
     } 
 
+    if(layer._mouseoverTarget){
+        layer._mouseoverTarget.emit('mouseleave', touch, layer._mouseoverTarget, layer);
+        delete layer._mouseoverTarget;
+    }
+
     return false;        
 }
 
@@ -145,6 +161,11 @@ var GameLayer = BaseLayer.extend({
 
         if(this.backClicked && this.setKeypadEnabled){
             this.setKeypadEnabled(true);
+        }
+
+        if ('mouse' in sys.capabilities) {
+            director.getMouseDispatcher().addMouseDelegate(this, 0);
+            this._mouseEnabled = true;
         }
     },
     onEnter: function(){
@@ -326,7 +347,28 @@ var GameLayer = BaseLayer.extend({
     },
     onTouchCancelled: function(touch, event){
         return delegateTouch(this, touch, 'touchcancel');
-    }
+    },
+
+    onMouseMoved: function(event){
+        return delegateTouch(this, event, 'mousemove');
+    },
+
+    onMouseDragged: function(event){
+        return delegateTouch(this, event, 'mousemove');
+    },
+    /*onMouseEntered: function(event){
+        return delegateTouch(this, event, 'mouseenter');
+    },
+    onMouseExited: function(event){
+        return delegateTouch(this, event, 'mouseleave');
+    },*/
+
+    /*onMouseDown: function(event){
+        return delegateTouch(this, event, 'mousedown');
+    },
+    onMouseUp: function(event){
+        return delegateTouch(this, event, 'mouseup');
+    },*/
 });
 
 var MaskLayer = BaseLayer.extend({
