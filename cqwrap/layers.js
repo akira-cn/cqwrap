@@ -162,11 +162,6 @@ var GameLayer = BaseLayer.extend({
         if(this.backClicked && this.setKeypadEnabled){
             this.setKeypadEnabled(true);
         }
-
-        if ('mouse' in sys.capabilities) {
-            director.getMouseDispatcher().addMouseDelegate(this, 0);
-            this._mouseEnabled = true;
-        }
     },
     onEnter: function(){
         this._super();
@@ -311,10 +306,17 @@ var GameLayer = BaseLayer.extend({
     },
     registerDelegate: function(){
         cc.registerTargetedDelegate(parseInt(-this.getZOrder()), true, this);
-        //cc.registerTargetedDelegate(parseInt(-this.getAbsoulteZOrder()), true, this);
+
+        if ('mouse' in sys.capabilities) {
+            director.getMouseDispatcher().addMouseDelegate(this, 0);
+        }
     },
     unregisterDelegate: function(){
         cc.unregisterTouchDelegate(this);
+        
+        if ('mouse' in sys.capabilities) {
+            director.getMouseDispatcher().removeMouseDelegate(this);
+        }
     },
     onTouchBegan: function(touch, event){
         //cc.log(this._touchRect);
