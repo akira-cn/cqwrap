@@ -34,36 +34,48 @@ var Button = BaseSprite.extend({
 
         var locked = false; //防止重复点击
 
-        if(callback){
-            this.on('touchstart', function(){
-                if(!self.enabled || locked) return;
-                if(!self.activated){
-                    var scale = self.getScaleY(); 
-                    self.setScale(scale * 0.95);
-                    //sprite.setOpacity(sprite.getOpacity() * 0.8);
-                    self.activated = true;
-                }
-            });
+        this.on('touchstart', function(){
+            if(!self.isEnabled() || locked) return;
+            if(!self.activated){
+                var scale = self.getScaleY(); 
+                self.setScale(scale * 0.95);
+                //sprite.setOpacity(sprite.getOpacity() * 0.8);
+                self.activated = true;
+            }
+        });
 
-            this.on('touchend', function(){
-                if(self.activated){
-                    var scale = self.getScaleY();
-                    self.setScale(scale / 0.95);
-                    //sprite.setOpacity(sprite.getOpacity() / 0.8);
-                    self.activated = false;
+        this.on('touchend', function(){
+            if(self.activated){
+                var scale = self.getScaleY();
+                self.setScale(scale / 0.95);
+                //sprite.setOpacity(sprite.getOpacity() / 0.8);
+                self.activated = false;
+            }
+        });
+        
+        this.on(event, function(){
+            if(!self.isEnabled() || locked) return;
+            callback && callback.apply(this, arguments);
+            locked = true;
+            setTimeout(function(){
+                locked = false;
+            }, 300);
+        });
+
+        if(cc.canvas && cc.canvas.style){
+            this.on('mouseenter', function(){
+                if(self.isEnabled()){
+                    cc.canvas.style.cursor = 'pointer';
                 }
             });
             
-            this.on(event, function(){
-                if(!self.enabled || locked) return;
-                callback.apply(this, arguments);
-                locked = true;
-                setTimeout(function(){
-                    locked = false;
-                }, 300);
+            this.on('mouseleave', function(){
+                if(self.isEnabled){
+                    cc.canvas.style.cursor = '';
+                }
             });
         }
-        
+
         function setSprite(){
             sprite.setAnchorPoint(cc.p(0, 0));
             sprite.setPosition(cc.p(0, 0));
