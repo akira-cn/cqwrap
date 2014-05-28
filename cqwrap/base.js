@@ -375,9 +375,11 @@ cc.getSpriteFrame = function(key){
 
     if(!frame){
         var texture = cc.TextureCache.getInstance().addImage(key);
-        var size = texture.getContentSize();
-        var frame = new cc.SpriteFrame();
-        frame.initWithTexture(texture, cc.rect(0, 0, size.width, size.height));
+        if(texture){
+          var size = texture.getContentSize();
+          var frame = new cc.SpriteFrame();
+          frame.initWithTexture(texture, cc.rect(0, 0, size.width, size.height));
+        }
     }
 
     return frame;

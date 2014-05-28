@@ -465,7 +465,12 @@ var styleMapKeyMap = {
 var StyleManager = {
     setStyle: function(node, key, value){
         if(typeof key === 'object'){
+            //必须在 opacity 之前执行掉
+            if('cascadeOpacityEnabled' in key){
+                this.setStyle(node, 'cascadeOpacityEnabled', key.cascadeOpacityEnabled);
+            }
             for(var i in key){
+                if(i === 'cascadeOpacityEnabled') continue;
                 this.setStyle(node, i, key[i]);
             }
         }else{

@@ -51,8 +51,8 @@ var BaseLayer = cc.Layer.extend({
         this._contextDefer.resolve(this.getParent());
     },
     onExit: function(){
-        this._super();
         this.clearAllTimers();
+        this._super();
     }
 });
 

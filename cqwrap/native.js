@@ -70,8 +70,16 @@ native.call = function(method, params){
         }
     }
 
-    native.postMessage(JSON.stringify(data));
+    //var acts = director.pauseAllActions();
 
+    //setTimeout(function(){
+        //解决某些手机上切换activity会闪动画面的问题
+        native.postMessage(JSON.stringify(data));
+        //if(acts && acts.length){
+        //    director.resumeActions(acts);
+        //}
+    //}, 100);
+    
     return deferred.promise;
 };
 
