@@ -169,7 +169,8 @@ var GameLayer = BaseLayer.extend({
         
         if(this.getParent() instanceof cc.Scene){
             var offsetY = director.offsetY || 0;
-            this.setPosition(cc.p(0, offsetY));
+            var pos = this.getPosition();
+            this.setPosition(cc.p(pos.x, pos.y + offsetY));
         }
 
         if(this.backClicked && typeof(history) !== 'undefined'){

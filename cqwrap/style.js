@@ -469,8 +469,15 @@ var StyleManager = {
             if('cascadeOpacityEnabled' in key){
                 this.setStyle(node, 'cascadeOpacityEnabled', key.cascadeOpacityEnabled);
             }
+            
+            //必须在 xy 之前执行掉
+            if('anchor' in key){
+                this.setStyle(node, 'anchor', key.anchor);
+            }
+
             for(var i in key){
                 if(i === 'cascadeOpacityEnabled') continue;
+                if(i === 'anchor') continue;
                 this.setStyle(node, i, key[i]);
             }
         }else{
