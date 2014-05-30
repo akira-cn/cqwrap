@@ -62,8 +62,11 @@ define(function(require, exports, module){
             var bird = cc.createSprite('res/img/bird1.png', {
                 xy: [300, 400]
             });
-            bird.animate(0.5, 'res/img/bird1.png', 'res/img/bird2.png', 'res/img/bird3.png')
-                .repeat().act();
+
+            var AnimationTask = require('cqwrap/animate').AnimationTask;
+
+            var flapTask = new AnimationTask().animate(0.5, 'res/img/bird1.png', 'res/img/bird2.png', 'res/img/bird3.png')
+                .repeat();
 
             /*var bird = cc.createSprite('bird1.png', {
                 xy: [300, 400]
@@ -71,7 +74,30 @@ define(function(require, exports, module){
 
             bird.animate(0.5, 'bird1.png', 'bird2.png', 'bird3.png').repeat().act();*/
 
+            bird.act(flapTask);
             this.addChild(bird);
+
+            this.delegate(bird);
+
+            var moveTask = new AnimationTask().moveBy(0.5, cc.p(0, 20)).reverse().repeat();
+            //bird.act(moveTask);
+
+            var tasks = [flapTask, moveTask];
+            
+            bird.on('click',  function(){
+                bird.stop(tasks[0]);
+                bird.act(tasks.reverse()[0]);
+            });
+
+            bird.on('mouseenter', function(){
+                if(cc.canvas && cc.canvas.style)
+                    cc.canvas.style.cursor = 'pointer';
+            });
+
+            bird.on('mouseleave', function(){
+                if(cc.canvas && cc.canvas.style)
+                    cc.canvas.style.cursor = '';
+            });
         }
     });
 

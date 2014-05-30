@@ -70,6 +70,9 @@ cc.mixin(AnimationTask.prototype, {
         this._animSeq  = this._animSeq  || [];
         return this._animSeq;
     },
+    getActionSequence: function(){
+        return cc.Sequence.create.apply(cc.Sequence, this.getActions());
+    },
     addAction: function(actionCls, args, easing, rate){
         var actions;
         if(actionCls instanceof cc.Action){
@@ -228,11 +231,11 @@ cc.Node.prototype.act = function(action){
 
     if(action){    
         if(action instanceof AnimationTask && action.getActions().length > 0){
-            action = cc.Sequence.create.apply(cc.Sequence, action.getActions()); 
+            action = action.getActionSequence();
         }
         this.runAction(action);
     }else if(this.getActions().length > 0){
-        action = cc.Sequence.create.apply(cc.Sequence, this.getActions()); 
+        action = this.getActionSequence();
         this.runAction(action);
         this.clearActions();
     }
@@ -240,6 +243,18 @@ cc.Node.prototype.act = function(action){
     return this;  
 }
 
+cc.Node.prototype.stop = function(action){
+    if(action){    
+        if(action instanceof AnimationTask && action.getActions().length > 0){
+            action = action.getActionSequence();
+        }
+        this.stopAction(action);
+    }else{
+        this.stopAllActions();
+    }
+    
+    return this;      
+}
 
 cc.mixin(cc.Node.prototype, new AnimationTask());
 
