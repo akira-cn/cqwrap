@@ -65,7 +65,7 @@ define(function(require, exports, module){
 
             var AnimationTask = require('cqwrap/animate').AnimationTask;
 
-            var flapTask = new AnimationTask().animate(0.5, 'res/img/bird1.png', 'res/img/bird2.png', 'res/img/bird3.png')
+            var flapTask = new AnimationTask().animate(0.5, 'res/img/bird%d.png', 1, 3)
                 .repeat();
 
             /*var bird = cc.createSprite('bird1.png', {
