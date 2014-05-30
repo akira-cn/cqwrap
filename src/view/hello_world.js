@@ -57,7 +57,7 @@ define(function(require, exports, module){
             this.addChild(drawNode);
 
             var cache = cc.SpriteFrameCache.getInstance();
-            cache.addSpriteFrames("res/img/birds.plist", "res/img/birds.png");
+            cache.addSpriteFrames("res/img/birds.json", "res/img/birds.png");
 
             var bird = cc.createSprite('res/img/bird1.png', {
                 xy: [300, 400]
@@ -65,7 +65,7 @@ define(function(require, exports, module){
 
             var AnimationTask = require('cqwrap/animate').AnimationTask;
 
-            var flapTask = new AnimationTask().animate(5.5, 'res/img/bird%d.png', 1, 3)
+            var flapTask = new AnimationTask().animate(5.5, 'bird%d.png', 1, 3)
                 .repeat();
 
             /*var bird = cc.createSprite('bird1.png', {
