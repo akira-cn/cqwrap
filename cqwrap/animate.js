@@ -7,14 +7,14 @@ var AnimationTool = {};
 
 var BaseSprite = require('cqwrap/sprites').BaseSprite;
 
-var getAnimFrames = function(name, from, length) {
+var getAnimFrames = function(name, startIndex, length) {
     var frames = [],
         i = 0,
-        from = from || 0,
+        startIndex = startIndex || 0,
         length = length || 9999999;
 
     do {
-        var frameName = name.replace('%d', from + i),
+        var frameName = name.replace('%d', startIndex + i),
             frame = cc.getSpriteFrame(frameName);
         
         if(frame) {
@@ -157,7 +157,7 @@ cc.mixin(AnimationTask.prototype, {
     /**
         sprite.animate(0.2, 'a.png', 'b.png', 'c.png');
         sprite.animate(0.2, 'abc_%d.png');
-        sprite.animate(0.2, 'abc_%d.png', from, length);
+        sprite.animate(0.2, 'abc_%d.png', startIndex, length);
      */
     animate: function(delay /* frames */){
         var frames = [].slice.call(arguments, 1);
