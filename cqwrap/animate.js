@@ -11,7 +11,7 @@ var getAnimFrames = function(name, startIndex, endIndex) {
     var frames = [],
         i = 0,
         startIndex = startIndex || 0,
-        endIndex = endIndex || 0;
+        endIndex = endIndex || 99999;
     var reversed = false;
 
     if(startIndex > endIndex){
