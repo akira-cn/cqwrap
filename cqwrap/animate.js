@@ -10,9 +10,14 @@ var BaseSprite = require('cqwrap/sprites').BaseSprite;
 var getAnimFrames = function(name, startIndex, endIndex) {
     var frames = [],
         i = 0,
-        startIndex = startIndex || 0,
-        endIndex = endIndex || 99999;
-    var reversed = false;
+        startIndex = startIndex || 0;
+    var reversed = false, cached = false;
+
+    if(endIndex == null){
+        //没有限定范围只能从cache中取
+        endIndex = 99999;
+        cached = true;
+    }
 
     if(startIndex > endIndex){
         var tmp = endIndex;
@@ -24,7 +29,7 @@ var getAnimFrames = function(name, startIndex, endIndex) {
 
     do {
         var frameName = name.replace('%d', startIndex + i),
-            frame = cc.getSpriteFrame(frameName);
+            frame = cc.getSpriteFrame(frameName, cached);
         
         if(frame) {
             frames.push(frame);
