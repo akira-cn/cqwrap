@@ -250,6 +250,44 @@ cc.strToArray = function(value){
   return value.trim().split(/\s*,\s*/).map(function(o){return parseInt(o)});
 }
 
+if(!isHtml5){
+  cc.Color3B = function(r, g, b){
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  };
+
+  cc.Color4B = function(r, g, b, a){
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a;
+  };
+
+  cc.Color4F = function(r, g, b, a){
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a; 
+  }
+
+  cc.c3b__ = cc.c3b;
+  cc.c4b__ = cc.c4b;
+  cc.c4f__ = cc.c4f;
+
+  cc.c3b = function(r, g, b){
+    return new cc.Color3B(r, g, b);
+  }
+
+  cc.c4b = function(r, g, b, a){
+    return new cc.Color4B(r, g, b, a);
+  } 
+
+  cc.c4f = function(r, g, b, a){
+    return new cc.Color4F(r, g, b, a);
+  } 
+}
+
 function hex_color_to_cxb(str){
   if(typeof str !== 'string'){
     return str;
