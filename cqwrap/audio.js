@@ -52,6 +52,9 @@ var Audio = {
             }
         }
         audio_enable = {effect: enable.effect, music: enable.music};
+    },
+    getEnable: function(){
+        return {effect: audio_enable.effect, music: audio_enable.music};
     }
 };
 

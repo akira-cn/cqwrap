@@ -23,7 +23,7 @@ var Button = BaseSprite.extend({
         }
         else if(typeof style === 'object' && 
             !(style instanceof cc.Sprite)){
-            this._super(style.texture);
+            !!style.texture && this._super(style.texture);
             delete style.texture;
         }else{
             sprite = style;

@@ -11,10 +11,10 @@
  * @author John Hann
  * @version 2.1.0
  */
+(function(global){
 
-(function(define, global) { 'use strict';
-define(function () {
-
+define(function(require, exports, module){
+	'use strict';
 	// Public API
 
 	when.defer     = defer;      // Create a deferred
@@ -817,15 +817,5 @@ define(function () {
 
 	return when;
 });
-})(
-	typeof define === 'function' && define.amd ? define : function (factory) { 
-		if(typeof module != 'undefined'){
-			module.exports = factory(); 
-		}else if(typeof window != 'undefined'){
-			window.when = factory();
-		}
-	},
-	this
-);
 
-
+})(this);
